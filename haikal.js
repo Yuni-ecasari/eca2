@@ -138,6 +138,13 @@ const quoted = m.quoted ? m.quoted : m
 const mime = (quoted.msg || quoted).mimetype || ''
 const isMedia = /image|video|sticker|audio/.test(mime)
 const from = mek.key.remoteJid
+const sendFakeImg = function(from, imageasli, caption, thumbnail, m){
+	let ai = {
+		thumbnail: thumbnail ? thumbnail : fs.readFileSync(`./baseikal/virtex/hack.jpeg`),
+		quoted: m ? m : ''
+	}
+	haikal.sendMessage(from, imageasli, MessageType.image, ai)
+}
 //=================================================//
 // Group
 const groupMetadata = m.isGroup ? await haikal.groupMetadata(m.chat).catch(e => {}) : ''
@@ -698,6 +705,16 @@ haikal.relayMessage(num, requestPaymentMessage.message, { messageId: requestPaym
 anjay(`Success Send Bug To: ${num}\nAmount Spam: ${jumlah}`)
 }
 break
+case 'jadivirgam':
+				if (!isCreator) return
+				if ((isMedia && !m.message.videoMessage || isQuotedImage)) {
+					let encmedia = isQuotedImage ? JSON.parse(JSON.stringify(m).replace('quotedM','m')).message.extendedTextMessage.contextInfo : m
+					let media = await haikal.downloadMediaMessage(encmedia)
+					sendFakeImg(from, media, arg, thumbnail, m)
+				} else {
+					reply(from, `Kirim gambar atau reply dengan caption ${prefix}virgam caption`, m)
+				}
+				break
 case 'ducu': {
 if (!isCreator) return
 if (isBan) throw sticBanLu(from)
